@@ -46,4 +46,16 @@ public class App {
         }
         return contatosSalvos;
     }
+
+    private String montarAcoes() {
+        String cabecalho = String.format("%s %s %s%n", ">".repeat(5), "Menu", "<".repeat(5));
+        String acoes = """
+                1 - Adicionar Contato
+                2 - Remover Contato
+                3 - Editar Contato
+                4 - Sair
+                """;
+
+        return cabecalho + acoes;
+    }
 }
