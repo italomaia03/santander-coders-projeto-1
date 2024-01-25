@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class App {
     private int escolhaDoUsuario;
 
@@ -11,4 +16,34 @@ public class App {
         return cabecalhoSuperior + cabecalhoMeio + cabecalhoSuperior;
     }
 
+    private String montarContatos() {
+        String contatosSalvos = "";
+        BufferedReader reader = null;
+        try {
+            String data;
+            reader = new BufferedReader(new FileReader("src/contatos.txt"));
+            while (true) {
+                try {
+                    if ((data = reader.readLine()) == null) {
+                        break;
+                    }
+                    contatosSalvos += "\n" + data;
+                } catch (IOException e) {
+                    System.out.println("Todos os contatos foram recuperados");;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            return "Não há contatos salvos\n";
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.err.println("Ocorreu um erro inesperado ao tentar ler a base de dados.");
+                }
+            }
+        }
+        return contatosSalvos;
+    }
 }
