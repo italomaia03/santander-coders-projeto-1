@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class App {
     private int escolhaDoUsuario;
@@ -29,7 +30,8 @@ public class App {
                     }
                     contatosSalvos += "\n" + data;
                 } catch (IOException e) {
-                    System.out.println("Todos os contatos foram recuperados");;
+                    System.out.println("Todos os contatos foram recuperados");
+                    ;
                 }
             }
 
@@ -64,5 +66,23 @@ public class App {
         String contatos = montarContatos();
         String acoes = montarAcoes();
         System.out.printf("%s%n%s%n%s", cabecalho, contatos, acoes);
+    }
+
+    public void run() {
+        Scanner input = new Scanner(System.in);
+        boolean ativo = true;
+        while (ativo) {
+            montarMenu();
+            System.out.print("Informe a opção que deseja: ");
+            this.escolhaDoUsuario = input.nextInt();
+            switch (this.escolhaDoUsuario) {
+                case 1 -> System.out.println("Adicionar contato");
+                case 2 -> System.out.println("Remover contato");
+                case 3 -> System.out.println("Editar contato");
+                case 4 -> ativo = false;
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+        input.close();
     }
 }
