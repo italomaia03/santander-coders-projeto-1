@@ -58,4 +58,11 @@ public class App {
 
         return cabecalho + acoes;
     }
+
+    private void montarMenu() {
+        String cabecalho = montarCabecalho();
+        String contatos = montarContatos();
+        String acoes = montarAcoes();
+        System.out.printf("%s%n%s%n%s", cabecalho, contatos, acoes);
+    }
 }
