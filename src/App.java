@@ -9,7 +9,7 @@ public class App {
 
     private String montarCabecalho() {
         String agenda = "AGENDA";
-        int tamanhoMax = 40;
+        int tamanhoMax = 20;
         int padding = (tamanhoMax - agenda.length()) / 2 - 1;
 
         String cabecalhoSuperior = String.format("%s%n", "#".repeat(tamanhoMax));
@@ -18,17 +18,17 @@ public class App {
     }
 
     private String montarContatos() {
-        String contatosSalvos = "";
+        String contatosSalvos = String.format("%s Contatos %s%nId | Nome%n", ">".repeat(5), "<".repeat(5));;
         BufferedReader reader = null;
         try {
             String data;
-            reader = new BufferedReader(new FileReader("src/contatos.txt"));
+            reader = new BufferedReader(new FileReader("src/database/contatos.txt"));
             while (true) {
                 try {
                     if ((data = reader.readLine()) == null) {
                         break;
                     }
-                    contatosSalvos += "\n" + data;
+                    contatosSalvos += data + "\n";
                 } catch (IOException e) {
                     System.out.println("Todos os contatos foram recuperados");
                     ;
@@ -36,7 +36,7 @@ public class App {
             }
 
         } catch (FileNotFoundException e) {
-            return "Não há contatos salvos\n";
+            return "\nNão há contatos salvos";
         } finally {
             if (reader != null) {
                 try {
@@ -65,7 +65,7 @@ public class App {
         String cabecalho = montarCabecalho();
         String contatos = montarContatos();
         String acoes = montarAcoes();
-        System.out.printf("%s%n%s%n%s", cabecalho, contatos, acoes);
+        System.out.printf("%s%s%n%n%s%n", cabecalho, contatos, acoes);
     }
 
     public void run() {
@@ -79,7 +79,10 @@ public class App {
                 case 1 -> System.out.println("Adicionar contato");
                 case 2 -> System.out.println("Remover contato");
                 case 3 -> System.out.println("Editar contato");
-                case 4 -> ativo = false;
+                case 4 -> {
+                    System.out.println("Saindo da aplicação...");
+                    ativo = false;
+                }
                 default -> System.out.println("Opção inválida.");
             }
         }
