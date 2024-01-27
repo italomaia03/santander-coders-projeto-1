@@ -95,5 +95,16 @@ public class AcoesTelefone {
             }
         }
     }
+    public String removerTelefone(Long idTelefone) {
+        Telefone telefoneInteresse = null;
+        for(Telefone telefone : this.telefonesCadastrados) {
+            if (telefone.getId().equals(idTelefone)){
+                telefoneInteresse = telefone;
+                this.telefonesCadastrados.remove(telefone);
+                break;
+            }
+        }
+        return String.format("Telefone %s foi removido com sucesso!", telefoneInteresse);
+    }
 }
 
