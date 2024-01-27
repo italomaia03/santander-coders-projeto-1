@@ -39,14 +39,19 @@ public class Menu {
         return cabecalho + acoes;
     }
 
-    public void montarMenu() {
+    public void montarMenuPrincipal() {
         String cabecalho = montarCabecalho("Agenda");
         String contatos = montarContatos();
         String acoes = montarAcoes();
         System.out.printf("%s%s%n%n%s%n", cabecalho, contatos, acoes);
     }
 
-    public Long removerContatoMenu(){
+    public void montarMenuCriarContato() {
+        String cabecalho = montarCabecalho("Adicionar Contato");
+        System.out.println(cabecalho);
+    }
+
+    public Long montarMenuRemoverContato(){
         Scanner input = new Scanner(System.in);
         String cabecalho = montarCabecalho("Remover Contato");
         String contatos = montarContatos();
