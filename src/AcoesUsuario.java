@@ -7,11 +7,30 @@ import java.util.Scanner;
 public class AcoesUsuario {
     private final AcoesTelefone acoesTelefone;
     private final Acoes acoes;
-
-
+    
     public AcoesUsuario(Acoes acoes, AcoesTelefone acoesTelefone) {
         this.acoes = acoes;
         this.acoesTelefone = acoesTelefone;
+    }
+    public void adicionarNovoContato() {
+        boolean contatoValido = false;
+        Contato novoContato;
+        while (!contatoValido) {
+            try {
+                novoContato = criarNovoContato();
+                contatoValido = validarContato(novoContato);
+                acoes.contatos.add(novoContato);
+                this.salvarContato(novoContato);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        System.out.println("Contato salvo com sucesso!");
+    }
+    private boolean validarContato(Contato contato) throws Exception {
+        if (contato.getNome() == null)
+            throw new Exception("O contato deve receber um nome.");
+        return true;
     }
     private Contato criarNovoContato() {
         Long idDisponivel = getIdDisponivelContato();
@@ -31,5 +50,34 @@ public class AcoesUsuario {
         System.out.printf("%nInforme o %s do contato: ", dado);
 
         return input.nextLine();
+    }
+    private String formatarContatoParaSalvar(Contato contato) {
+        String telefonesContato = "";
+        for (Telefone telefone : contato.getTelefones()) {
+            telefonesContato += String.format("| %d | %s%d ", telefone.getId(), telefone.getDdd(), telefone.getNumero());
+        }
+
+        return String.format("%d | %s %s %s", contato.getId(), contato.getNome(), contato.getSobrenome(),  telefonesContato);
+    }
+
+    private void salvarContato(Contato contato) {
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(acoes.arquivo, true));
+            writer.write(formatarContatoParaSalvar(contato));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.arquivo.getName());
+            System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("Ocorreu um erro inesperado.");
+                }
+            }
+        }
     }
 }
