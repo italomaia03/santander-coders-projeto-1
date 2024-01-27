@@ -18,5 +18,22 @@ public class AcoesTelefone {
         }
         return telefones;
     }
+
+    private Telefone criarNovoTelefone() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Informe o DDD do telefone: ");
+        String ddd = input.nextLine();
+        System.out.print("Informe o número do telefone: ");
+        Long numeroTelefone = input.nextLong();
+        Long idTelefone = getIdDisponivelTelefone();
+
+        return new Telefone(idTelefone, ddd, numeroTelefone);
+    }
+    private Long getIdDisponivelTelefone() {
+        return this.telefonesCadastrados.isEmpty() ? 1L :
+                this.telefonesCadastrados
+                        .get(telefonesCadastrados.size() - 1)
+                        .getId() + 1;
+    }
 }
 
