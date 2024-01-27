@@ -24,7 +24,10 @@ public class App {
                 case 1 -> {
                     acoesUsuario.adicionarNovoContato();
                 }
-                case 2 -> System.out.println("Remover contato");
+                case 2 -> {
+                    Long idContato = menu.removerContatoMenu();
+                    acoesUsuario.removerContato(idContato);
+                }
                 case 3 -> System.out.println("Editar contato");
                 case 4 -> {
                     System.out.println("Saindo da aplicação...");
