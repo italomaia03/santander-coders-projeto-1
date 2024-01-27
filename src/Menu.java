@@ -51,9 +51,9 @@ public class Menu {
         System.out.println(cabecalho);
     }
 
-    public Long montarMenuRemoverContato(){
+    public Long montarMenuCapturarId(String titulo){
         Scanner input = new Scanner(System.in);
-        String cabecalho = montarCabecalho("Remover Contato");
+        String cabecalho = montarCabecalho(titulo);
         String contatos = montarContatos();
         System.out.printf("%s%n%s",cabecalho, contatos);
         System.out.print("Informe o ID do contato que deseja remover: ");
