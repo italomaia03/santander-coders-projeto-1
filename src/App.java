@@ -23,7 +23,7 @@ public class App {
 
     private String montarContatos() {
         String contatosSalvos = String.format("%s Contatos %s%nId | Nome%n", ">".repeat(5), "<".repeat(5));
-        List<Contato> contatos = acoes.contatos;
+        List<Contato> contatos = acoes.getContatosCadastrados();
         for (Contato contato : contatos) {
             contatosSalvos += String.format("%d | %s %s%n", contato.getId(), contato.getNome(), contato.getSobrenome());
         }
