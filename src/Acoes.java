@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,7 +7,7 @@ public class Acoes {
     private final List<Contato> contatosCadastrados;
     private final List<Telefone> telefonesCadastrados;
     private final List<String> stringContatosCadastrados;
-    private File arquivo;
+    private final File arquivo;
 
     public Acoes(String caminhoDoArquivo) {
         this.arquivo = verificarArquivo(caminhoDoArquivo);
@@ -146,6 +143,23 @@ public class Acoes {
         return nomeCompleto;
     }
 
+    public void persistirDados(String dado, boolean acrescentarDados) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(this.arquivo, acrescentarDados));
+        writer.write(dado);
+        writer.newLine();
+        writer.close();
+    }
+
+    public void persistirDados (List<String> dados) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(this.arquivo, false));
+
+        for (String dado : dados) {
+            writer.write(dado);
+            writer.newLine();
+        }
+        writer.close();
+    }
+
     public List<String> getStringContatosCadastrados() {
         return stringContatosCadastrados;
     }
@@ -160,10 +174,5 @@ public class Acoes {
 
     public File getArquivo() {
         return arquivo;
-    }
-
-    public static void main(String[] args) {
-        Acoes acoes = new Acoes("src/database/teste.txt");
-        System.out.println(acoes.getStringContatosCadastrados());
     }
 }
