@@ -8,7 +8,6 @@ public class AcoesTelefone {
         this.acoes = acoes;
         this.telefonesCadastrados = getTodosTelefonesCadastrados();
     }
-
     private List<Telefone> getTodosTelefonesCadastrados() {
         List<Telefone> telefones = new ArrayList<>();
         for (Contato contato : acoes.contatos) {
@@ -18,7 +17,6 @@ public class AcoesTelefone {
         }
         return telefones;
     }
-
     private Telefone criarNovoTelefone() {
         Scanner input = new Scanner(System.in);
         System.out.print("Informe o DDD do telefone: ");
@@ -34,6 +32,36 @@ public class AcoesTelefone {
                 this.telefonesCadastrados
                         .get(telefonesCadastrados.size() - 1)
                         .getId() + 1;
+    }
+    private boolean validarTelefones(Telefone telefone) throws Exception {
+        String ddd = telefone.getDdd();
+        String numeroTelefone = telefone.getNumero().toString();
+        boolean telefonesIguais = compararTelefones(this.telefonesCadastrados, telefone);
+
+        if (ddd.length() != 2)
+            throw new Exception("DDD inválido. O DDD deve conter precisamente dois números.\nEx.: 88.");
+
+        else if (numeroTelefone.length() < 8 || numeroTelefone.length() > 9)
+            throw new Exception("Número de telefone inválido. O número de telefone deve conter 8 (residencial fixo) ou 9 (celulares) dígitos.\nEx.: 3581-2356 (residencial), 999873456 (celular).");
+
+        else if (telefonesIguais) {
+            throw new Exception("Este número já se encontra cadastrado. Por favor, insira um número não cadastrado.");
+        }
+
+        return true;
+    }
+
+    private boolean compararTelefones(List<Telefone> telefones, Telefone novoTelefone) {
+        String ddd = novoTelefone.getDdd();
+        Long numeroTelefone = novoTelefone.getNumero();
+
+        for (Telefone telefone : telefones){
+            if(ddd.equals(telefone.getDdd()) &&
+                    numeroTelefone.equals(telefone.getNumero())){
+                return true;
+            }
+        }
+        return false;
     }
 }
 
