@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Acoes {
-    protected final List<Contato> contatos;
-    protected final List<Telefone> telefonesCadastrados;
-    protected File arquivo;
+    private final List<Contato> contatosCadastrados;
+    private final List<Telefone> telefonesCadastrados;
+    private File arquivo;
 
     public Acoes(String caminhoDoArquivo) {
         this.arquivo = verificarArquivo(caminhoDoArquivo);
-        this.contatos = carregarContatos();
+        this.contatosCadastrados = carregarContatos();
         this.telefonesCadastrados = getTodosTelefonesCadastrados();
     }
 
@@ -63,7 +63,7 @@ public class Acoes {
 
     private List<Telefone> getTodosTelefonesCadastrados() {
         List<Telefone> telefones = new ArrayList<>();
-        for (Contato contato : this.contatos) {
+        for (Contato contato : this.contatosCadastrados) {
             for (Telefone telefoneContato : contato.getTelefones()) {
                 telefones.add(telefoneContato);
             }
@@ -141,5 +141,17 @@ public class Acoes {
         sc.close();
 
         return nomeCompleto;
+    }
+
+    public List<Contato> getContatosCadastrados() {
+        return contatosCadastrados;
+    }
+
+    public List<Telefone> getTelefonesCadastrados() {
+        return telefonesCadastrados;
+    }
+
+    public File getArquivo() {
+        return arquivo;
     }
 }

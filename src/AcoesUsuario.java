@@ -19,7 +19,7 @@ public class AcoesUsuario {
             try {
                 novoContato = criarNovoContato();
                 contatoValido = validarContato(novoContato);
-                acoes.contatos.add(novoContato);
+                acoes.getContatosCadastrados().add(novoContato);
                 this.salvarContato(novoContato);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
@@ -40,9 +40,9 @@ public class AcoesUsuario {
         return new Contato(idDisponivel, nomeContato, sobrenomeContato, telefonesContato);
     }
     private Long getIdDisponivelContato() {
-        return (acoes.contatos.isEmpty()) ? 1L:
-                acoes.contatos
-                        .get(acoes.contatos.size() - 1)
+        return (acoes.getContatosCadastrados().isEmpty()) ? 1L:
+                acoes.getContatosCadastrados()
+                        .get(acoes.getContatosCadastrados().size() - 1)
                         .getId() + 1;
     }
     private String setDadosContato(String dado) {
@@ -64,11 +64,11 @@ public class AcoesUsuario {
         BufferedWriter writer = null;
 
         try {
-            writer = new BufferedWriter(new FileWriter(acoes.arquivo, true));
+            writer = new BufferedWriter(new FileWriter(acoes.getArquivo(), true));
             writer.write(formatarContatoParaSalvar(contato));
             writer.newLine();
         } catch (IOException e) {
-            System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.arquivo.getName());
+            System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName());
             System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
         } finally {
             if (writer != null) {

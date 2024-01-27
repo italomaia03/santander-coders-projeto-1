@@ -18,15 +18,15 @@ public class AcoesTelefone {
         return new Telefone(idTelefone, ddd, numeroTelefone);
     }
     private Long getIdDisponivelTelefone() {
-        return acoes.telefonesCadastrados.isEmpty() ? 1L :
-                acoes.telefonesCadastrados
-                        .get(acoes.telefonesCadastrados.size() - 1)
+        return acoes.getTelefonesCadastrados().isEmpty() ? 1L :
+                acoes.getTelefonesCadastrados()
+                        .get(acoes.getTelefonesCadastrados().size() - 1)
                         .getId() + 1;
     }
     private boolean validarTelefones(Telefone telefone) throws Exception {
         String ddd = telefone.getDdd();
         String numeroTelefone = telefone.getNumero().toString();
-        boolean telefonesIguais = compararTelefones(acoes.telefonesCadastrados, telefone);
+        boolean telefonesIguais = compararTelefones(acoes.getTelefonesCadastrados(), telefone);
 
         if (ddd.length() != 2)
             throw new Exception("DDD inválido. O DDD deve conter precisamente dois números.\nEx.: 88.");
@@ -63,7 +63,7 @@ public class AcoesTelefone {
                 telefoneValido = validarTelefones(novoTelefone);
                 finalizarCadastroTelefones = realizarNovoCadastro();
                 telefonesContato.add(novoTelefone);
-                acoes.telefonesCadastrados.add(novoTelefone);
+                acoes.getTelefonesCadastrados().add(novoTelefone);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -87,10 +87,10 @@ public class AcoesTelefone {
     }
     public String removerTelefone(Long idTelefone) {
         Telefone telefoneInteresse = null;
-        for(Telefone telefone : acoes.telefonesCadastrados) {
+        for(Telefone telefone : acoes.getTelefonesCadastrados()) {
             if (telefone.getId().equals(idTelefone)){
                 telefoneInteresse = telefone;
-                acoes.telefonesCadastrados.remove(telefone);
+                acoes.getTelefonesCadastrados().remove(telefone);
                 break;
             }
         }
