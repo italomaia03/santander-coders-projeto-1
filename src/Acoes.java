@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Acoes {
-    protected List<Contato> contatos;
-    protected File arquivo;
+    private final List<Contato> contatosCadastrados;
+    private final List<Telefone> telefonesCadastrados;
+    private final List<String> stringContatosCadastrados;
+    private File arquivo;
 
     public Acoes(String caminhoDoArquivo) {
         this.arquivo = verificarArquivo(caminhoDoArquivo);
-        this.contatos = carregarContatos();
+        this.stringContatosCadastrados = new ArrayList<>();
+        this.contatosCadastrados = carregarContatos();
+        this.telefonesCadastrados = getTodosTelefonesCadastrados();
     }
 
     public File verificarArquivo(String caminhoDoArquivo) {
@@ -42,6 +46,7 @@ public class Acoes {
             reader = new BufferedReader(new FileReader(this.arquivo));
             while ((dados = reader.readLine()) != null) {
                 contatosCadastrados.add(capturarContato(dados));
+                this.stringContatosCadastrados.add(dados);
             }
         } catch (IOException e) {
             System.err.println("Não foi possível acessar o arquivo com os contatos salvos.");
@@ -57,6 +62,16 @@ public class Acoes {
         }
         System.out.println("Contatos carregados com sucesso!");
         return contatosCadastrados;
+    }
+
+    private List<Telefone> getTodosTelefonesCadastrados() {
+        List<Telefone> telefones = new ArrayList<>();
+        for (Contato contato : this.contatosCadastrados) {
+            for (Telefone telefoneContato : contato.getTelefones()) {
+                telefones.add(telefoneContato);
+            }
+        }
+        return telefones;
     }
 
     private Contato capturarContato(String dados) {
@@ -129,5 +144,26 @@ public class Acoes {
         sc.close();
 
         return nomeCompleto;
+    }
+
+    public List<String> getStringContatosCadastrados() {
+        return stringContatosCadastrados;
+    }
+
+    public List<Contato> getContatosCadastrados() {
+        return contatosCadastrados;
+    }
+
+    public List<Telefone> getTelefonesCadastrados() {
+        return telefonesCadastrados;
+    }
+
+    public File getArquivo() {
+        return arquivo;
+    }
+
+    public static void main(String[] args) {
+        Acoes acoes = new Acoes("src/database/teste.txt");
+        System.out.println(acoes.getStringContatosCadastrados());
     }
 }
