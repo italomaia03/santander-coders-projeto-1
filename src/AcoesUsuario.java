@@ -80,4 +80,21 @@ public class AcoesUsuario {
             }
         }
     }
+    public void removerContato(Long idContato){
+        Contato contatoInteresse = null;
+        for (Contato contato : acoes.getContatosCadastrados()) {
+            if (contato.getId().equals(idContato)){
+                contatoInteresse = contato;
+                for (Telefone telefone : contato.getTelefones()) {
+                    System.out.println(acoesTelefone.removerTelefone(telefone.getId()));
+                }
+                break;
+            }
+        }
+        try {
+            System.out.printf("Contato %s %s foi removido com sucesso!%n", contatoInteresse.getNome(), contatoInteresse.getSobrenome());
+        } catch (NullPointerException e) {
+            System.err.printf("Não foi encontrado qualquer contato com o ID %d.", idContato);
+        }
+    }
 }
