@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
 
@@ -8,11 +9,11 @@ public class Menu {
     }
 
     private String montarCabecalho(String titulo) {
-        int tamanhoMax = 20;
+        int tamanhoMax = 30;
         int padding = (tamanhoMax - titulo.length()) / 2 - 1;
 
         String cabecalhoSuperior = String.format("%s%n", "#".repeat(tamanhoMax));
-        String cabecalhoMeio = String.format("%s %s %s%n", "#".repeat(padding), "AGENDA", "#".repeat(padding));
+        String cabecalhoMeio = String.format("%s %s %s%n", "#".repeat(padding), titulo, "#".repeat(padding));
         return cabecalhoSuperior + cabecalhoMeio + cabecalhoSuperior;
     }
 
@@ -43,5 +44,14 @@ public class Menu {
         String contatos = montarContatos();
         String acoes = montarAcoes();
         System.out.printf("%s%s%n%n%s%n", cabecalho, contatos, acoes);
+    }
+
+    public Long removerContatoMenu(){
+        Scanner input = new Scanner(System.in);
+        String cabecalho = montarCabecalho("Remover Contato");
+        String contatos = montarContatos();
+        System.out.printf("%s%n%s",cabecalho, contatos);
+        System.out.print("Informe o ID do contato que deseja remover: ");
+        return input.nextLong();
     }
 }
