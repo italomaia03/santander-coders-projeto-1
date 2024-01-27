@@ -1,22 +1,12 @@
 import java.util.*;
 
 public class AcoesTelefone {
-    private final List<Telefone> telefonesCadastrados;
     private final Acoes acoes;
 
     public AcoesTelefone(Acoes acoes) {
         this.acoes = acoes;
-        this.telefonesCadastrados = getTodosTelefonesCadastrados();
     }
-    private List<Telefone> getTodosTelefonesCadastrados() {
-        List<Telefone> telefones = new ArrayList<>();
-        for (Contato contato : acoes.contatos) {
-            for (Telefone telefoneContato : contato.getTelefones()) {
-                telefones.add(telefoneContato);
-            }
-        }
-        return telefones;
-    }
+
     private Telefone criarNovoTelefone() {
         Scanner input = new Scanner(System.in);
         System.out.print("Informe o DDD do telefone: ");
@@ -28,15 +18,15 @@ public class AcoesTelefone {
         return new Telefone(idTelefone, ddd, numeroTelefone);
     }
     private Long getIdDisponivelTelefone() {
-        return this.telefonesCadastrados.isEmpty() ? 1L :
-                this.telefonesCadastrados
-                        .get(telefonesCadastrados.size() - 1)
+        return acoes.telefonesCadastrados.isEmpty() ? 1L :
+                acoes.telefonesCadastrados
+                        .get(acoes.telefonesCadastrados.size() - 1)
                         .getId() + 1;
     }
     private boolean validarTelefones(Telefone telefone) throws Exception {
         String ddd = telefone.getDdd();
         String numeroTelefone = telefone.getNumero().toString();
-        boolean telefonesIguais = compararTelefones(this.telefonesCadastrados, telefone);
+        boolean telefonesIguais = compararTelefones(acoes.telefonesCadastrados, telefone);
 
         if (ddd.length() != 2)
             throw new Exception("DDD inválido. O DDD deve conter precisamente dois números.\nEx.: 88.");
@@ -73,7 +63,7 @@ public class AcoesTelefone {
                 telefoneValido = validarTelefones(novoTelefone);
                 finalizarCadastroTelefones = realizarNovoCadastro();
                 telefonesContato.add(novoTelefone);
-                this.telefonesCadastrados.add(novoTelefone);
+                acoes.telefonesCadastrados.add(novoTelefone);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -97,10 +87,10 @@ public class AcoesTelefone {
     }
     public String removerTelefone(Long idTelefone) {
         Telefone telefoneInteresse = null;
-        for(Telefone telefone : this.telefonesCadastrados) {
+        for(Telefone telefone : acoes.telefonesCadastrados) {
             if (telefone.getId().equals(idTelefone)){
                 telefoneInteresse = telefone;
-                this.telefonesCadastrados.remove(telefone);
+                acoes.telefonesCadastrados.remove(telefone);
                 break;
             }
         }
