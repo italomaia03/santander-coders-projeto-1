@@ -52,7 +52,7 @@ public class AcoesUsuario {
 
     private String setDadosContato(String dado) {
         Scanner input = new Scanner(System.in);
-        System.out.printf("%nInforme o %s do contato: ", dado);
+        System.out.printf("Informe o %s do contato: ", dado);
 
         return input.nextLine();
     }
@@ -67,46 +67,22 @@ public class AcoesUsuario {
     }
 
     private void salvarContato(Contato contato) {
-        BufferedWriter writer = null;
-
+        String contatoFormatado = formatarContatoParaSalvar(contato);
         try {
-            writer = new BufferedWriter(new FileWriter(acoes.getArquivo(), true));
-            writer.write(formatarContatoParaSalvar(contato));
-            writer.newLine();
+            acoes.getStringContatosCadastrados().add(contatoFormatado);
+            acoes.persistirDados(contatoFormatado, true);
         } catch (IOException e) {
             System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName());
             System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Ocorreu um erro inesperado.");
-                }
-            }
         }
     }
 
     private void salvarAlteracoesContatos(List<String> dados) {
-        BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(acoes.getArquivo()));
-
-            for (String dado : dados) {
-                writer.write(dado);
-                writer.newLine();
-            }
+            acoes.persistirDados(dados);
         } catch (IOException e) {
             System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName());
             System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Ocorreu um erro inesperado.");
-                }
-            }
         }
     }
 
