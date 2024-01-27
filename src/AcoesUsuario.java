@@ -133,6 +133,9 @@ public class AcoesUsuario {
             acoes
                     .getStringContatosCadastrados()
                     .remove(indiceContatoInteresse);
+            acoes
+                    .getContatosCadastrados()
+                    .remove(contatoInteresse);
             salvarAlteracoesContatos(acoes.getStringContatosCadastrados());
             System.out.printf("Contato %s %s foi removido com sucesso!%n", contatoInteresse.getNome(), contatoInteresse.getSobrenome());
         } catch (NullPointerException e) {
