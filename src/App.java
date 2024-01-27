@@ -1,11 +1,15 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    private int escolhaDoUsuario;
+    private final Acoes acoes;
+    private final AcoesUsuario acoesUsuario;
+
+    public App(String caminhoDoArquivo) {
+        this.acoes = new Acoes(caminhoDoArquivo);
+        AcoesTelefone acoesTelefone = new AcoesTelefone(this.acoes);
+        this.acoesUsuario = new AcoesUsuario(this.acoes, acoesTelefone);
+    }
 
     private String montarCabecalho() {
         String agenda = "AGENDA";
@@ -18,34 +22,12 @@ public class App {
     }
 
     private String montarContatos() {
-        String contatosSalvos = String.format("%s Contatos %s%nId | Nome%n", ">".repeat(5), "<".repeat(5));;
-        BufferedReader reader = null;
-        try {
-            String data;
-            reader = new BufferedReader(new FileReader("src/database/contatos.txt"));
-            while (true) {
-                try {
-                    if ((data = reader.readLine()) == null) {
-                        break;
-                    }
-                    contatosSalvos += data + "\n";
-                } catch (IOException e) {
-                    System.out.println("Todos os contatos foram recuperados");
-                    ;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            return "\nNão há contatos salvos";
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    System.err.println("Ocorreu um erro inesperado ao tentar ler a base de dados.");
-                }
-            }
+        String contatosSalvos = String.format("%s Contatos %s%nId | Nome%n", ">".repeat(5), "<".repeat(5));
+        List<Contato> contatos = acoes.contatos;
+        for (Contato contato : contatos) {
+            contatosSalvos += String.format("%d | %s %s%n", contato.getId(), contato.getNome(), contato.getSobrenome());
         }
+
         return contatosSalvos;
     }
 
@@ -74,9 +56,11 @@ public class App {
         while (ativo) {
             montarMenu();
             System.out.print("Informe a opção que deseja: ");
-            this.escolhaDoUsuario = input.nextInt();
-            switch (this.escolhaDoUsuario) {
-                case 1 -> System.out.println("Adicionar contato");
+            int escolhaDoUsuario = input.nextInt();
+            switch (escolhaDoUsuario) {
+                case 1 -> {
+                    acoesUsuario.adicionarNovoContato();
+                }
                 case 2 -> System.out.println("Remover contato");
                 case 3 -> System.out.println("Editar contato");
                 case 4 -> {
