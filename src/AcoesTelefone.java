@@ -50,7 +50,6 @@ public class AcoesTelefone {
 
         return true;
     }
-
     private boolean compararTelefones(List<Telefone> telefones, Telefone novoTelefone) {
         String ddd = novoTelefone.getDdd();
         Long numeroTelefone = novoTelefone.getNumero();
@@ -62,6 +61,39 @@ public class AcoesTelefone {
             }
         }
         return false;
+    }
+    public List<Telefone> adicionarNovoTelefone() {
+        List<Telefone> telefonesContato = new ArrayList<>();
+        boolean telefoneValido = false;
+        boolean finalizarCadastroTelefones = false;
+        Telefone novoTelefone;
+        while (!telefoneValido || !finalizarCadastroTelefones) {
+            try {
+                novoTelefone = criarNovoTelefone();
+                telefoneValido = validarTelefones(novoTelefone);
+                finalizarCadastroTelefones = realizarNovoCadastro();
+                telefonesContato.add(novoTelefone);
+                this.telefonesCadastrados.add(novoTelefone);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return telefonesContato;
+    }
+    private boolean realizarNovoCadastro() {
+        Scanner input = new Scanner(System.in);
+        while (true){
+            System.out.print("Digite 'S' para adicionar mais um número, ou 'N' para finalizar o cadastro de telefones: ");
+            char respostaUsuario = input.next().charAt(0);
+            switch (respostaUsuario) {
+                case 'S':
+                    return false;
+                case 'N':
+                    return true;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
     }
 }
 
