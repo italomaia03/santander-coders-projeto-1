@@ -9,10 +9,12 @@ import java.util.Scanner;
 public class Acoes {
     private final List<Contato> contatosCadastrados;
     private final List<Telefone> telefonesCadastrados;
+    private final List<String> stringContatosCadastrados;
     private File arquivo;
 
     public Acoes(String caminhoDoArquivo) {
         this.arquivo = verificarArquivo(caminhoDoArquivo);
+        this.stringContatosCadastrados = new ArrayList<>();
         this.contatosCadastrados = carregarContatos();
         this.telefonesCadastrados = getTodosTelefonesCadastrados();
     }
@@ -44,6 +46,7 @@ public class Acoes {
             reader = new BufferedReader(new FileReader(this.arquivo));
             while ((dados = reader.readLine()) != null) {
                 contatosCadastrados.add(capturarContato(dados));
+                this.stringContatosCadastrados.add(dados);
             }
         } catch (IOException e) {
             System.err.println("Não foi possível acessar o arquivo com os contatos salvos.");
@@ -143,6 +146,10 @@ public class Acoes {
         return nomeCompleto;
     }
 
+    public List<String> getStringContatosCadastrados() {
+        return stringContatosCadastrados;
+    }
+
     public List<Contato> getContatosCadastrados() {
         return contatosCadastrados;
     }
@@ -153,5 +160,10 @@ public class Acoes {
 
     public File getArquivo() {
         return arquivo;
+    }
+
+    public static void main(String[] args) {
+        Acoes acoes = new Acoes("src/database/teste.txt");
+        System.out.println(acoes.getStringContatosCadastrados());
     }
 }
