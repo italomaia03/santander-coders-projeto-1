@@ -19,16 +19,20 @@ public class Acoes {
     public File verificarArquivo(String caminhoDoArquivo) {
         File arquivo = new File(caminhoDoArquivo);
 
+        if(arquivo.getParentFile() != null) {
+            arquivo.getParentFile().mkdirs();
+        }
+
         if (!arquivo.exists()) {
-            System.out.println("\u001B[43mSISTEMA\u001B[0m: Não foi encontrado nenhum arquivo com este nome.");
-            System.out.printf("\u001B[43mSISTEMA\u001B[0m: Criando um novo arquivo com o nome %s, no caminho %s...%n", arquivo.getName(), arquivo.getPath());
+            System.out.println("\u001B[43mSISTEMA:\u001B[0m Não foi encontrado nenhum arquivo com este nome.");
+            System.out.printf("\u001B[43mSISTEMA:\u001B[0m Criando um novo arquivo com o nome %s, no caminho %s...%n", arquivo.getName(), arquivo.getPath());
             try {
                 if (arquivo.createNewFile()) {
                     System.out.println(Feedback.getMensagem("sucesso", String.format("O arquivo %s foi criado com sucesso.", arquivo.getName())));
                 }
             } catch (IOException e) {
                 System.err.println(Feedback.getMensagem("erro","Ocorreu um erro inesperado ao tentar criar o arquivo."));
-                System.err.println(Feedback.getMensagem("erro","Por favor, verifique as permissões do usuário no diretório."));
+                System.err.println(Feedback.getMensagem("erro","Por favor, verifique as permissões do usuário no diretório ou se o diretório informado existe."));
                 return null;
             }
         }
