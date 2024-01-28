@@ -1,39 +1,42 @@
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    private final Acoes acoes;
     private final Menu menu;
     private final AcoesUsuario acoesUsuario;
 
     public App(String caminhoDoArquivo) {
-        this.acoes = new Acoes(caminhoDoArquivo);
-        this.menu = new Menu(this.acoes);
-        AcoesTelefone acoesTelefone = new AcoesTelefone(this.acoes);
-        this.acoesUsuario = new AcoesUsuario(this.acoes, acoesTelefone);
+        Acoes acoes = new Acoes(caminhoDoArquivo);
+        this.menu = new Menu(acoes);
+        AcoesTelefone acoesTelefone = new AcoesTelefone(acoes);
+        this.acoesUsuario = new AcoesUsuario(acoes, acoesTelefone);
     }
 
     public void run() {
         Scanner input = new Scanner(System.in);
         boolean ativo = true;
         while (ativo) {
-            menu.montarMenu();
+            menu.montarMenuPrincipal();
             System.out.print("Informe a opção que deseja: ");
             int escolhaDoUsuario = input.nextInt();
             switch (escolhaDoUsuario) {
                 case 1 -> {
+                    menu.montarMenuCriarContato();
                     acoesUsuario.adicionarNovoContato();
                 }
                 case 2 -> {
-                    Long idContato = menu.removerContatoMenu();
+                    Long idContato = menu.montarMenuCapturarId("Remover Contato", "contato","remover");
                     acoesUsuario.removerContato(idContato);
                 }
-                case 3 -> System.out.println("Editar contato");
+                case 3 -> {
+                    Long idContato = menu.montarMenuCapturarId("Editar contato","contato", "editar");
+                    acoesUsuario.editarContato(idContato, this.menu);
+
+                }
                 case 4 -> {
                     System.out.println("Saindo da aplicação...");
                     ativo = false;
                 }
-                default -> System.out.println("Opção inválida.");
+                default -> System.err.println("Opção inválida.");
             }
         }
         input.close();

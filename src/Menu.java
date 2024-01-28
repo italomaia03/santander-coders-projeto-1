@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,19 +40,40 @@ public class Menu {
         return cabecalho + acoes;
     }
 
-    public void montarMenu() {
+    public void montarMenuPrincipal() {
         String cabecalho = montarCabecalho("Agenda");
         String contatos = montarContatos();
         String acoes = montarAcoes();
         System.out.printf("%s%s%n%n%s%n", cabecalho, contatos, acoes);
     }
 
-    public Long removerContatoMenu(){
+    public void montarMenuCriarContato() {
+        String cabecalho = montarCabecalho("Adicionar Contato");
+        System.out.println(cabecalho);
+    }
+
+    public Long montarMenuCapturarId(String titulo, String objetoInteresse, String operacao){
         Scanner input = new Scanner(System.in);
-        String cabecalho = montarCabecalho("Remover Contato");
+        String cabecalho = montarCabecalho(titulo);
         String contatos = montarContatos();
         System.out.printf("%s%n%s",cabecalho, contatos);
-        System.out.print("Informe o ID do contato que deseja remover: ");
+        System.out.printf("Informe o ID do %s que deseja %s: ", objetoInteresse, operacao);
         return input.nextLong();
+    }
+
+    public int montarMenuEdicaoContato(Contato contato) {
+        Scanner input = new Scanner(System.in);
+        System.out.printf("%s Contato a ser editado %s%n", "=".repeat(4), "=".repeat(4));
+        System.out.printf("%s | %s %s | %s%n", "ID", "Nome", "Sobrenome", "Telefones");
+        System.out.printf("%d | %s %s | %s%n%" +
+                "n", contato.getId(), contato.getNome(), contato.getSobrenome(), contato.getTelefones());
+        System.out.println("1 -> Editar nome");
+        System.out.println("2 -> Editar sobrenome");
+        System.out.println("3 -> Editar um dos telefones cadastrados");
+        System.out.println("4 -> Adicionar novo telefone ao contato");
+        System.out.println("5 -> Remover telefone do contato");
+        System.out.print("Escolha o atributo do contato que deseja editar: ");
+
+        return input.nextInt();
     }
 }
