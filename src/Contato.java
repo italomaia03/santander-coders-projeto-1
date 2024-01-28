@@ -6,6 +6,9 @@ public class Contato {
     private String sobrenome;
     private List<Telefone> telefones;
 
+    public Contato() {
+    }
+
     public Contato(Long id, String nome, String sobrenome, List<Telefone> telefones) {
         this.id = id;
         this.nome = nome;
@@ -13,8 +16,13 @@ public class Contato {
         this.telefones = telefones;
     }
 
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -35,5 +43,9 @@ public class Contato {
 
     public List<Telefone> getTelefones() {
         return telefones;
+    }
+
+    public void setTelefones(List<Telefone> telefones) {
+        this.telefones = telefones;
     }
 }

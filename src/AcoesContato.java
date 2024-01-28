@@ -11,34 +11,36 @@ public class AcoesUsuario {
         this.acoesTelefone = acoesTelefone;
     }
 
-    public void adicionarNovoContato() {
-        boolean contatoValido = false;
-        Contato novoContato;
-        while (!contatoValido) {
-            try {
-                novoContato = criarNovoContato();
-                contatoValido = validarContato(novoContato);
-                acoes.getContatosCadastrados().add(novoContato);
-                this.salvarContato(novoContato);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        System.out.println("Contato salvo com sucesso!");
+    public String adicionarNovoContato() {
+        Contato novoContato = criarNovoContato();
+        acoes.getContatosCadastrados().add(novoContato);
+        this.salvarContato(novoContato);
+
+        return Feedback.getMensagem("sucesso","Contato salvo com sucesso!");
     }
 
     private boolean validarContato(Contato contato) throws Exception {
         if (contato.getNome().trim().isEmpty())
-            throw new Exception("O contato deve receber um nome.");
+            throw new Exception(Feedback.getMensagem("erro","O contato deve receber um nome."));
         return true;
     }
 
     private Contato criarNovoContato() {
-        Long idDisponivel = getIdDisponivelContato();
-        String nomeContato = setDadosContato("nome");
-        String sobrenomeContato = setDadosContato("sobrenome");
-        List<Telefone> telefonesContato = acoesTelefone.adicionarNovoTelefone();
-        return new Contato(idDisponivel, nomeContato, sobrenomeContato, telefonesContato);
+        Contato novoContato = new Contato();
+        boolean contatoValido = false;
+        while (!contatoValido) {
+            try{
+                novoContato.setId(getIdDisponivelContato());
+                novoContato.setNome(setDadosContato("nome"));
+                novoContato.setSobrenome(setDadosContato("sobrenome"));
+                contatoValido = validarContato(novoContato);
+                List<Telefone> telefonesContato = acoesTelefone.adicionarNovoTelefone();
+                novoContato.setTelefones(telefonesContato);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return novoContato;
     }
 
     private Long getIdDisponivelContato() {
@@ -70,8 +72,8 @@ public class AcoesUsuario {
             acoes.getStringContatosCadastrados().add(contatoFormatado);
             acoes.persistirDados(contatoFormatado, true);
         } catch (IOException e) {
-            System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName());
-            System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
+            System.err.printf(Feedback.getMensagem("erro", String.format("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName())));
+            System.err.println(Feedback.getMensagem("erro", "Por favor, reveja as permissões do arquivo e reinicie a aplicação."));
         }
     }
 
@@ -79,12 +81,12 @@ public class AcoesUsuario {
         try {
             acoes.persistirDados(dados);
         } catch (IOException e) {
-            System.err.printf("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName());
-            System.err.println("Por favor, reveja as permissões do arquivo e reinicie a aplicação.");
+            System.err.printf(Feedback.getMensagem("erro", String.format("Não foi possível salvar o novo contato no arquivo %s%n.", acoes.getArquivo().getName())));
+            System.err.println(Feedback.getMensagem("erro", "Por favor, reveja as permissões do arquivo e reinicie a aplicação."));
         }
     }
 
-    public int encontarContatoPeloId(Long idContato) throws Exception {
+    private int encontarContatoPeloId(Long idContato) throws Exception {
         int contatoInteresse = -1;
         for (Contato contato : acoes.getContatosCadastrados()) {
             if (contato.getId().equals(idContato)) {
@@ -93,16 +95,16 @@ public class AcoesUsuario {
             }
         }
         if (contatoInteresse == -1) {
-            throw new Exception(String.format("Não foi encontrado qualquer contato com o ID %d.", idContato));
+            throw new Exception(Feedback.getMensagem("erro",String.format("Não foi encontrado qualquer contato com o ID %d.", idContato)));
         }
         return contatoInteresse;
     }
 
-    public void removerContato(Long idContato) {
+    public String removerContato(Long idContato) {
         try {
             int indiceContatoInteresse = this.encontarContatoPeloId(idContato);
             Contato contatoInteresse = acoes.getContatosCadastrados().get(indiceContatoInteresse);
-            for (Telefone telefoneContato : contatoInteresse.getTelefones()){
+            for (Telefone telefoneContato : contatoInteresse.getTelefones()) {
                 System.out.println(acoesTelefone.removerTelefonesCadastrados(telefoneContato.getId()));
             }
             acoes
@@ -112,13 +114,13 @@ public class AcoesUsuario {
                     .getContatosCadastrados()
                     .remove(indiceContatoInteresse);
             salvarAlteracoesContatos(acoes.getStringContatosCadastrados());
-            System.out.printf("Contato %s %s foi removido com sucesso!%n", contatoInteresse.getNome(), contatoInteresse.getSobrenome());
+            return Feedback.getMensagem("sucesso", String.format("Contato %s %s foi removido com sucesso!", contatoInteresse.getNome(), contatoInteresse.getSobrenome()));
         } catch (Exception e) {
-            System.err.printf("Não foi encontrado qualquer contato com o ID %d.", idContato);
+            return Feedback.getMensagem("erro", String.format("Não foi encontrado qualquer contato com o ID %d.", idContato));
         }
     }
 
-    private void escolherOperacaoEdicaoContato(Contato contato, int opcaoEscolhida, Menu menu) throws Exception {
+    private void escolherOperacaoEdicaoContato(Contato contato, int opcaoEscolhida, Menu menu) {
         switch (opcaoEscolhida) {
             case 1 -> {
                 String novoNome = definirNomeSobrenomeContato("nome");
@@ -129,21 +131,20 @@ public class AcoesUsuario {
                 contato.setSobrenome(novoSobrenome);
             }
             case 3 -> {
-                Long idTelefoneInteresse = menu.montarMenuCapturarId("Editar Contato", "telefone", "editar");
+                Long idTelefoneInteresse = menu.montarMenuCapturarId(contato, "telefone", "editar");
                 acoesTelefone.editarTelefoneCadastrado(idTelefoneInteresse, contato.getTelefones());
             }
-            case 4 -> {
-                acoesTelefone.adicionarNovoTelefone(contato.getTelefones());
-            }
+            case 4 -> acoesTelefone.adicionarNovoTelefone(contato.getTelefones());
+
             case 5 -> {
-                Long idTelefoneInteresse = menu.montarMenuCapturarId("Editar Contato", "telefone", "editar");
+                Long idTelefoneInteresse = menu.montarMenuCapturarId(contato, "telefone", "editar");
                 System.out.println(acoesTelefone.removerTelefonesCadastrados(idTelefoneInteresse, contato.getTelefones()));
             }
-            default -> System.err.println("Opção inválida.");
+            default -> System.err.println(Feedback.getMensagem("erro","Opção inválida."));
         }
     }
 
-    public void editarContato(Long idContato, Menu menu) {
+    public String editarContato(Long idContato, Menu menu) {
         try {
             int indiceContatoInteresse = encontarContatoPeloId(idContato);
             Contato contato = acoes.getContatosCadastrados().get(indiceContatoInteresse);
@@ -153,10 +154,10 @@ public class AcoesUsuario {
             String contatoFormatado = formatarContatoParaSalvar(contato);
             acoes.getStringContatosCadastrados().set(indiceContatoInteresse, contatoFormatado);
             salvarAlteracoesContatos(acoes.getStringContatosCadastrados());
-            System.out.println("Alterações realizadas com sucesso!");
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            return e.getMessage();
         }
+        return Feedback.getMensagem("sucesso","Alterações realizadas com sucesso!");
     }
 
     private String definirNomeSobrenomeContato(String atributo) {
