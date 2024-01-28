@@ -9,7 +9,7 @@ public class AcoesTelefone {
 
     private Telefone criarNovoTelefone() {
         Scanner input = new Scanner(System.in);
-        System.out.print("Informe o DDD do telefone: ");
+        System.out.print("\nInforme o DDD do telefone: ");
         String ddd = input.nextLine();
         System.out.print("Informe o número do telefone: ");
         Long numeroTelefone = input.nextLong();
@@ -17,12 +17,24 @@ public class AcoesTelefone {
 
         return new Telefone(idTelefone, ddd, numeroTelefone);
     }
+
+    private Telefone criarNovoTelefone(Long idTelefone) {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Informe o DDD do telefone: ");
+        String ddd = input.nextLine();
+        System.out.print("Informe o número do telefone: ");
+        Long numeroTelefone = input.nextLong();
+
+        return new Telefone(idTelefone, ddd, numeroTelefone);
+    }
+
     private Long getIdDisponivelTelefone() {
         return acoes.getTelefonesCadastrados().isEmpty() ? 1L :
                 acoes.getTelefonesCadastrados()
                         .get(acoes.getTelefonesCadastrados().size() - 1)
                         .getId() + 1;
     }
+
     private boolean validarTelefones(Telefone telefone) throws Exception {
         String ddd = telefone.getDdd();
         String numeroTelefone = telefone.getNumero().toString();
@@ -40,39 +52,85 @@ public class AcoesTelefone {
 
         return true;
     }
+
     private boolean compararTelefones(List<Telefone> telefones, Telefone novoTelefone) {
         String ddd = novoTelefone.getDdd();
         Long numeroTelefone = novoTelefone.getNumero();
 
-        for (Telefone telefone : telefones){
-            if(ddd.equals(telefone.getDdd()) &&
-                    numeroTelefone.equals(telefone.getNumero())){
+        for (Telefone telefone : telefones) {
+            if (ddd.equals(telefone.getDdd()) &&
+                    numeroTelefone.equals(telefone.getNumero())) {
                 return true;
             }
         }
         return false;
     }
-    public List<Telefone> adicionarNovoTelefone() {
-        List<Telefone> telefonesContato = new ArrayList<>();
+
+    private Telefone verificarCriacaoTelefone() {
         boolean telefoneValido = false;
-        boolean finalizarCadastroTelefones = false;
-        Telefone novoTelefone;
-        while (!telefoneValido || !finalizarCadastroTelefones) {
+        Telefone novoTelefone = null;
+        while (!telefoneValido) {
             try {
                 novoTelefone = criarNovoTelefone();
                 telefoneValido = validarTelefones(novoTelefone);
-                finalizarCadastroTelefones = realizarNovoCadastro();
-                telefonesContato.add(novoTelefone);
-                acoes.getTelefonesCadastrados().add(novoTelefone);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println(e.getMessage());
             }
+        }
+
+        return novoTelefone;
+    }
+
+    private Telefone verificarCriacaoTelefone(Long idTelefone) {
+        boolean telefoneValido = false;
+        Telefone novoTelefone = null;
+        while (!telefoneValido) {
+            try {
+                novoTelefone = criarNovoTelefone(idTelefone);
+                telefoneValido = validarTelefones(novoTelefone);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return novoTelefone;
+    }
+
+    public List<Telefone> adicionarNovoTelefone() {
+        List<Telefone> telefonesContato = new ArrayList<>();
+        boolean realizarNovoCadastro = false;
+        while (!realizarNovoCadastro) {
+            Telefone novoTelefone = null;
+            try {
+                novoTelefone = verificarCriacaoTelefone();
+                realizarNovoCadastro = realizarNovoCadastro();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            telefonesContato.add(novoTelefone);
+            acoes.getTelefonesCadastrados().add(novoTelefone);
         }
         return telefonesContato;
     }
+
+    public void adicionarNovoTelefone(List<Telefone> telefonesContato) {
+        Telefone novoTelefone = null;
+        boolean realizarNovoCadastro = false;
+
+        while (!realizarNovoCadastro) {
+            try {
+                novoTelefone = verificarCriacaoTelefone();
+                realizarNovoCadastro = realizarNovoCadastro();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            acoes.getTelefonesCadastrados().add(novoTelefone);
+            telefonesContato.add(novoTelefone);
+        }
+    }
+
     private boolean realizarNovoCadastro() {
         Scanner input = new Scanner(System.in);
-        while (true){
+        while (true) {
             System.out.print("Digite 'S' para adicionar mais um número, ou 'N' para finalizar o cadastro de telefones: ");
             char respostaUsuario = input.next().charAt(0);
             switch (respostaUsuario) {
@@ -85,16 +143,55 @@ public class AcoesTelefone {
             }
         }
     }
-    public String removerTelefone(Long idTelefone) {
-        Telefone telefoneInteresse = null;
-        for(Telefone telefone : acoes.getTelefonesCadastrados()) {
-            if (telefone.getId().equals(idTelefone)){
-                telefoneInteresse = telefone;
-                acoes.getTelefonesCadastrados().remove(telefone);
+
+    private int encontarTelefonePeloId(Long idTelefone, List<Telefone> telefones) throws Exception {
+        int telefoneInteresse = -1;
+        for (Telefone telefone : telefones) {
+            if (telefone.getId().equals(idTelefone)) {
+                telefoneInteresse = telefones.indexOf(telefone);
                 break;
             }
         }
-        return String.format("Telefone %s foi removido com sucesso!", telefoneInteresse);
+        if (telefoneInteresse == -1) {
+            throw new Exception(String.format("Não foi encontrado qualquer telefone com o ID %d.", idTelefone));
+        }
+        return telefoneInteresse;
+    }
+
+    public String removerTelefonesCadastrados(Long idTelefone) {
+        int indiceTelefoneInteresse = -1;
+        try {
+            indiceTelefoneInteresse = encontarTelefonePeloId(idTelefone, acoes.getTelefonesCadastrados());
+            acoes.getTelefonesCadastrados().remove(indiceTelefoneInteresse);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return String.format("Telefone %s foi removido dos telefones cadastrados com sucesso!", indiceTelefoneInteresse);
+    }
+
+    public String removerTelefonesCadastrados(Long idTelefone, List<Telefone> telefonesContato) {
+        int indiceTelefoneInteresse = -1;
+        try {
+            indiceTelefoneInteresse = encontarTelefonePeloId(idTelefone, telefonesContato);
+            telefonesContato.remove(indiceTelefoneInteresse);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        System.out.println(removerTelefonesCadastrados(idTelefone));
+        return String.format("Telefone %s foi removido dos telefones do contato com sucesso!", indiceTelefoneInteresse);
+    }
+
+    public void editarTelefoneCadastrado(Long idTelefoneInterese, List<Telefone> telefonesContato) {
+        try {
+            int indiceTelefoneContato = encontarTelefonePeloId(idTelefoneInterese, telefonesContato);
+            int indiceTelefoneCadastrado = encontarTelefonePeloId(idTelefoneInterese, acoes.getTelefonesCadastrados());
+            Telefone telefoneEditado = verificarCriacaoTelefone(idTelefoneInterese);
+            telefonesContato.set(indiceTelefoneContato, telefoneEditado);
+            acoes.getTelefonesCadastrados().set(indiceTelefoneCadastrado, telefoneEditado);
+            System.out.printf("%nTelefone %s foi modificado com sucesso!%n", telefoneEditado);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 }
 
