@@ -24,10 +24,14 @@ public class App {
                     acoesUsuario.adicionarNovoContato();
                 }
                 case 2 -> {
-                    Long idContato = menu.montarMenuCapturarId("Remover Contato");
+                    Long idContato = menu.montarMenuCapturarId("Remover Contato", "contato","remover");
                     acoesUsuario.removerContato(idContato);
                 }
-                case 3 -> System.out.println("Editar contato");
+                case 3 -> {
+                    Long idContato = menu.montarMenuCapturarId("Editar contato","contato", "editar");
+                    acoesUsuario.editarContato(idContato, this.menu);
+
+                }
                 case 4 -> {
                     System.out.println("Saindo da aplicação...");
                     ativo = false;
