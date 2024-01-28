@@ -2,11 +2,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-public class AcoesUsuario {
+public class AcoesContato {
     private final AcoesTelefone acoesTelefone;
     private final Acoes acoes;
 
-    public AcoesUsuario(Acoes acoes, AcoesTelefone acoesTelefone) {
+    public AcoesContato(Acoes acoes, AcoesTelefone acoesTelefone) {
         this.acoes = acoes;
         this.acoesTelefone = acoesTelefone;
     }

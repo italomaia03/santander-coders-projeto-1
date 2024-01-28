@@ -41,13 +41,13 @@ public class AcoesTelefone {
         boolean telefonesIguais = compararTelefones(acoes.getTelefonesCadastrados(), telefone);
 
         if (ddd.length() != 2)
-            throw new Exception("DDD inválido. O DDD deve conter precisamente dois números.\nEx.: 88.");
+            throw new Exception(Feedback.getMensagem("erro", "DDD inválido. O DDD deve conter precisamente dois números.\nEx.: 88."));
 
         else if (numeroTelefone.length() < 8 || numeroTelefone.length() > 9)
-            throw new Exception("Número de telefone inválido. O número de telefone deve conter 8 (residencial fixo) ou 9 (celulares) dígitos.\nEx.: 3581-2356 (residencial), 999873456 (celular).");
+            throw new Exception(Feedback.getMensagem("erro", "Número de telefone inválido. O número de telefone deve conter 8 (residencial fixo) ou 9 (celulares) dígitos.\nEx.: 35812356 (residencial), 999873456 (celular)."));
 
         else if (telefonesIguais) {
-            throw new Exception("Este número já se encontra cadastrado. Por favor, insira um número não cadastrado.");
+            throw new Exception(Feedback.getMensagem("erro", "Este número já se encontra cadastrado. Por favor, insira um número não cadastrado."));
         }
 
         return true;
@@ -139,7 +139,7 @@ public class AcoesTelefone {
                 case 'N':
                     return true;
                 default:
-                    System.out.println("Opção inválida.");
+                    System.out.println(Feedback.getMensagem("erro", "Opção inválida."));
             }
         }
     }
@@ -153,7 +153,7 @@ public class AcoesTelefone {
             }
         }
         if (telefoneInteresse == -1) {
-            throw new Exception(String.format("Não foi encontrado qualquer telefone com o ID %d.", idTelefone));
+            throw new Exception(Feedback.getMensagem("erro", String.format("Não foi encontrado qualquer telefone com o ID %d.", idTelefone)));
         }
         return telefoneInteresse;
     }
@@ -166,7 +166,7 @@ public class AcoesTelefone {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        return String.format("Telefone %s foi removido dos telefones cadastrados com sucesso!", indiceTelefoneInteresse);
+        return Feedback.getMensagem("sucesso", String.format("Telefone %s foi removido dos telefones cadastrados com sucesso!", indiceTelefoneInteresse));
     }
 
     public String removerTelefonesCadastrados(Long idTelefone, List<Telefone> telefonesContato) {
@@ -178,7 +178,7 @@ public class AcoesTelefone {
             System.err.println(e.getMessage());
         }
         System.out.println(removerTelefonesCadastrados(idTelefone));
-        return String.format("Telefone %s foi removido dos telefones do contato com sucesso!", indiceTelefoneInteresse);
+        return Feedback.getMensagem("sucesso", String.format("Telefone %s foi removido dos telefones do contato com sucesso!", indiceTelefoneInteresse));
     }
 
     public void editarTelefoneCadastrado(Long idTelefoneInterese, List<Telefone> telefonesContato) {
@@ -188,7 +188,7 @@ public class AcoesTelefone {
             Telefone telefoneEditado = verificarCriacaoTelefone(idTelefoneInterese);
             telefonesContato.set(indiceTelefoneContato, telefoneEditado);
             acoes.getTelefonesCadastrados().set(indiceTelefoneCadastrado, telefoneEditado);
-            System.out.printf("%nTelefone %s foi modificado com sucesso!%n", telefoneEditado);
+            System.out.println(Feedback.getMensagem("sucesso", String.format("%nTelefone %s foi modificado com sucesso!", telefoneEditado)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
