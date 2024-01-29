@@ -6,12 +6,16 @@ public class Contato {
     private String sobrenome;
     private List<Telefone> telefones;
 
+    public Contato() {
+    }
+
     public Contato(Long id, String nome, String sobrenome, List<Telefone> telefones) {
         this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.telefones = telefones;
     }
+
 
     public Long getId() {
         return id;
